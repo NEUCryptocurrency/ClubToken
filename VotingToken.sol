@@ -40,8 +40,7 @@ library SafeMath {
 contract VotingTokenInterface {
     function totalSupply() public constant returns (uint);
     function balanceOf(address tokenOwner) public constant returns (uint balance);
-    function allowance(address tokenOwner, address spender) public constant returns (uint remaining);
-    function transfer(address to, uint tokens) public returns (bool success);
+    function transfer(address to) public returns (bool success);
 
     event Transfer(address indexed to);
     event Clear();
@@ -60,7 +59,7 @@ contract Owned {
         owner = msg.sender;
     }
 
-    modifier onlyOwner {
+    modifier onlyOwner() {
         require(msg.sender == owner);
         _;
     }
@@ -81,13 +80,14 @@ contract Owned {
 // ERC20 Token, with the addition of symbol, name and decimals and an
 // initial fixed supply
 // ----------------------------------------------------------------------------
-contract VotingToken is ERC20Interface, Owned {
+contract VotingToken is VotingTokenInterface, Owned {
     using SafeMath for uint;
 
     string public symbol;
     string public  name;
     uint8 public decimals;
-    uint public _totalSupply;
+    uint public totalSupply;
+    address[] public addresses;
 
     mapping(address => uint) balances;
 
@@ -95,11 +95,11 @@ contract VotingToken is ERC20Interface, Owned {
     // ------------------------------------------------------------------------
     // Constructor
     // ------------------------------------------------------------------------
-    function FixedSupplyToken() public {
+    function VotingToken() public {
         symbol = "HUSKY";
         name = "Northeastern Crypto Voting Token";
         decimals = 0;
-        _totalSupply = 0;
+        totalSupply = 0;
     }
 
 
@@ -107,7 +107,7 @@ contract VotingToken is ERC20Interface, Owned {
     // Total supply
     // ------------------------------------------------------------------------
     function totalSupply() public constant returns (uint) {
-        return _totalSupply;
+        return totalSupply;
     }
 
 
@@ -122,10 +122,28 @@ contract VotingToken is ERC20Interface, Owned {
     // ------------------------------------------------------------------------
     // Transfers a single token from token to `to` account
     // ------------------------------------------------------------------------
-    function transfer(address to, uint tokens) public returns (bool success) ownlyOwner {
+    function transfer(address to) public onlyOwner returns (bool success) {
+        if (balances[to] == 0) {
+          addresses.push(to);
+        }
         balances[to] = balances[to].add(1);
+        totalSupply = totalSupply.add(1);
         Transfer(to);
         return true;
+    }
+
+
+    // ------------------------------------------------------------------------
+    // Clears all the balances to represent the start of a new semester
+    // ------------------------------------------------------------------------
+    function clear() public onlyOwner returns (bool success) {
+      for (uint i = addresses.length ; i > 0; i--) {
+        balances[addresses[i-1]] = 0;
+        delete addresses[i-1];
+      }
+      totalSupply = 0;
+      Clear();
+      return true;
     }
 
 
@@ -135,52 +153,4 @@ contract VotingToken is ERC20Interface, Owned {
     function () public payable {
         revert();
     }
-}
-
-
-contract Voting is VotingToken {
-
-  string name;
-  bytes32[] public votingChoices;
-  mapping (address => bool) public voted;
-  mapping (bytes32 => uint) public votesReceived;
-  uint public timeEnding;
-
-  function Voting(string _name, bytes32[] _votingChoices, uint _durationHours) public onlyOwner {
-    name = _name;
-    votingChoices = _votingChoices;
-    timeEnding = now + (_durationHours * 1 hours);
-  }
-
-  function newChoice(bytes32 choice) onlyOwner {
-    votingChoices.push(choice);
-  }
-
-  function totalVotesFor(bytes32 choice) view public returns (uint) {
-    return votesReceived[choice];
-  }
-
-
-  // Do we want to allow someone to vote on your behalf
-  // if you don't want to pay the gas?
-  function voteForChoice(bytes32 choice) public {
-    uint index = indexOfCandidate(choice);
-    require(index != uint(-1));
-    require(voted[msg.sender] != true);
-    voted[msg.sender] = true;
-    votesRecieved[choice] += balanceOf(msg.sender);
-    }
-
-  function indexOfCandidate(bytes32 candidate) view public returns (uint) {
-    for(uint i = 0; i < candidateList.length; i++) {
-      if (candidateList[i] == candidate) {
-        return i;
-      }
-    }
-    return uint(-1);
-  }
-
-  function allCandidates() view public returns (bytes32[]) {
-    return votingChoices;
-  }
 }

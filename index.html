@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Husky Voting Dapp</title>
+  <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+  <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+
+<body class="container">
+  <h1>Northeastern Crypto Club Voting Dapp</h1>
+  <hr />
+  <br/>
+  <h2 class="text-center">Election Results</h2>
+  <h4 class="text-left" id="time"></h4>
+  <div id="loader">
+    <p class="text-center">Loading...</p>
+  </div>
+  <div id="content" style="display: none;">
+    <table class="table table-responsive table-bordered">
+      <thead>
+        <tr>
+          <th>Options</th>
+          <th>Votes</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+        <tr>
+          <td id="option-1">Kale</td>
+          <td id="option-1"></td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+    <form id="vote-form">
+      <div class="form-group">
+        <label for="candidate-control">Select Option</label>
+        <select class="form-control" id="form" name="candidate"></select>
+      </div>
+      <button type="submit" class="btn btn-primary" id="vote-button">Vote</button>
+      <div id="txStatus" class="cold-md-12"></div>
+    </form>
+  </div>
+  <br/>
+  <h2>Lookup Voter Info</h2>
+  <div>
+    <input type="text" id="voter-info" , class="col-sm-6" placeholder="Enter the voter address" />
+    <button class="btn btn-primary" id="lookup-button">Lookup</button>
+    <div class="voter-details row text-left">
+      <div id="tokens-owned" class="margin-top-3 col-md-12"></div>
+      <div id="vote-cast" class="col-md-12"></div>
+    </div>
+  </div>
+</body>
+<script src="https://cdn.rawgit.com/ethereum/web3.js/develop/dist/web3.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+<script src="./index.js"></script>
+
+</html>
