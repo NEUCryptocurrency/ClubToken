@@ -38,8 +38,8 @@ library SafeMath {
 // Voting Token Interface
 // ----------------------------------------------------------------------------
 contract VotingTokenInterface {
-    function totalSupply() public constant returns (uint);
-    function balanceOf(address tokenOwner) public constant returns (uint balance);
+    function totalSupply() public view returns (uint);
+    function balanceOf(address tokenOwner) public view returns (uint balance);
     function transfer(address to) public returns (bool success);
 
     event Transfer(address indexed to);
@@ -106,7 +106,7 @@ contract VotingToken is VotingTokenInterface, Owned {
     // ------------------------------------------------------------------------
     // Total supply
     // ------------------------------------------------------------------------
-    function totalSupply() public constant returns (uint) {
+    function totalSupply() public view returns (uint) {
         return totalSupply;
     }
 
@@ -114,7 +114,7 @@ contract VotingToken is VotingTokenInterface, Owned {
     // ------------------------------------------------------------------------
     // Get the token balance for account `tokenOwner`
     // ------------------------------------------------------------------------
-    function balanceOf(address tokenOwner) public constant returns (uint balance) {
+    function balanceOf(address tokenOwner) public view returns (uint balance) {
         return balances[tokenOwner];
     }
 
