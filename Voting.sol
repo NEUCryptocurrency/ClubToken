@@ -15,8 +15,8 @@ pragma solidity ^0.4.18;
 // Voting Token Interface
 // ----------------------------------------------------------------------------
 contract VotingTokenInterface {
-    function totalSupply() public constant returns (uint);
-    function balanceOf(address tokenOwner) public constant returns (uint balance);
+    function totalSupply() public view returns (uint);
+    function balanceOf(address tokenOwner) public view returns (uint balance);
     function transfer(address to) public returns (bool success);
 
     event Transfer(address indexed to);
@@ -61,7 +61,7 @@ contract Voting is Owned {
   // Struct representing a voting choice
   struct Choice {
         uint id;
-        string name;
+        string description;
         uint voteCount;
     }
 
@@ -87,8 +87,8 @@ contract Voting is Owned {
   }
 
   //// Allows owner to add a voting choice ////
-  function addChoice(string _name) public onlyOwner() returns (bool success) {
-    votingChoices[choicesCount] = Choice(choicesCount, _name, 0);
+  function addChoice(string _description) public onlyOwner() returns (bool success) {
+    votingChoices[choicesCount] = Choice(choicesCount, _description, 0);
     choicesCount ++;
   }
 
