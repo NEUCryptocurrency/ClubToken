@@ -2,16 +2,16 @@ pragma solidity ^0.4.18;
 
 import "./VotingToken.sol";
 
-contract TestVotingToken is VotingToken {
+contract test_VotingToken is VotingToken {
 
-  function testTotalSupply() public {
+  function test_totalSupply() public {
     totalSupply = 0;
     assert(VotingToken.totalSupply() == 0);
     totalSupply = 5;
     assert(VotingToken.totalSupply() == 5);
   }
 
-  function testTransfer() public {
+  function test_transfer() public {
     uint initialTotalSupply = VotingToken.totalSupply();
     uint initialBalance = VotingToken.balanceOf(0x3f5Af07E277BBAf4BFA448e29CE944968d52B8ce);
     VotingToken.transfer(0x3f5Af07E277BBAf4BFA448e29CE944968d52B8ce);
@@ -19,7 +19,7 @@ contract TestVotingToken is VotingToken {
     assert(VotingToken.totalSupply() == initialTotalSupply + 1);
   }
 
-  function testClear() public {
+  function test_clear() public {
     totalSupply = 0;
     balances[0x3f5Af07E277BBAf4BFA448e29CE944968d52B8ce] = 0;
     VotingToken.transfer(0x3f5Af07E277BBAf4BFA448e29CE944968d52B8ce);
